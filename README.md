@@ -25,7 +25,11 @@ This is a Dockerized deployment of a sample Tomcat web application with SSL/TLS 
     docker run -p 4041:4041 tomcat-ssl
    ```
 
-Note: openssl was used to generate the private key and public certificate with the following commands:
+5. Test the app
+
+   You can access the app using the following url: https://localhost:4041/sample
+
+Note: openssl was used to generate the private key and a self-signed certificate with the following commands:
 
 Generate CA private key (ca.key.pem)
    ```bash
