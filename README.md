@@ -37,5 +37,5 @@ Generate CA private key (ca.key.pem)
    ```
 Generate CA public certificate (ca.crt.pem)
    ```bash
-   openssl req -new -x509 -key ca-key.pem -out ca-cert.pem -subj "/CN=Leo/O=XpandIT"
+   openssl req -new -x509 -key ca-key.pem -out ca-cert.pem -subj "/CN=Leo"
    ```
