@@ -4,7 +4,7 @@ This is a Dockerized deployment of a sample Tomcat web application with SSL/TLS 
 
 ## How to Build and Run
 
-1. Make sure you have Docker installed on your system.
+1. Make sure you have Docker installed and running on your system.
 
 2. Clone this repository:
 
