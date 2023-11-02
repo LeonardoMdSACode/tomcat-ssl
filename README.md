@@ -10,7 +10,7 @@ This is a Dockerized deployment of a sample Tomcat web application with SSL/TLS 
 
    ```bash
    git clone https://github.com/LeonardoMdSACode/tomcat-docker-ssl.git
-   cd tomcat-docker-ssl
+   cd tomcat-ssl
    ```
 
 3. Build docker image
