@@ -17,7 +17,7 @@ RUN curl -O https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.77/bin/apache-t
 # Copy your sample web app to the Tomcat webapps directory
 COPY sample.war /opt/tomcat/webapps/sample.war
 
-# Overwrite the default server.xml by using echo and a Here Document
+# Overwrite the default server.xml by using echo
 RUN echo '<?xml version="1.0" encoding="UTF-8"?>' > /opt/tomcat/conf//server.xml \
     && echo '<Server port="8005" shutdown="SHUTDOWN">' >> /opt/tomcat/conf//server.xml \
     && echo '  <Listener className="org.apache.catalina.startup.VersionLoggerListener" />' >> /opt/tomcat/conf//server.xml \
@@ -56,7 +56,7 @@ RUN echo '<?xml version="1.0" encoding="UTF-8"?>' > /opt/tomcat/conf//server.xml
     && echo '  </Service>' >> /opt/tomcat/conf//server.xml \
     && echo '</Server>' >> /opt/tomcat/conf//server.xml
 
-# Copy the Java Keystore
+# Copy the CA PEM files
 COPY ca-cert.pem /opt/tomcat/conf/ca-cert.pem
 COPY ca-key.pem /opt/tomcat/conf/ca-key.pem
 
