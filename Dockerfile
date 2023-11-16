@@ -17,44 +17,46 @@ RUN curl -O https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.77/bin/apache-t
 # Copy your sample web app to the Tomcat webapps directory
 COPY sample.war /opt/tomcat/webapps/sample.war
 
-# Overwrite the default server.xml by using echo
-RUN echo '<?xml version="1.0" encoding="UTF-8"?>' > /opt/tomcat/conf//server.xml \
-    && echo '<Server port="8005" shutdown="SHUTDOWN">' >> /opt/tomcat/conf//server.xml \
-    && echo '  <Listener className="org.apache.catalina.startup.VersionLoggerListener" />' >> /opt/tomcat/conf//server.xml \
-    && echo '  <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />' >> /opt/tomcat/conf//server.xml \
-    && echo '  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />' >> /opt/tomcat/conf//server.xml \
-    && echo '  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />' >> /opt/tomcat/conf//server.xml \
-    && echo '  <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />' >> /opt/tomcat/conf//server.xml \
-    && echo '  <GlobalNamingResources>' >> /opt/tomcat/conf//server.xml \
-    && echo '    <Resource name="UserDatabase" auth="Container"' >> /opt/tomcat/conf//server.xml \
-    && echo '              type="org.apache.catalina.UserDatabase"' >> /opt/tomcat/conf//server.xml \
-    && echo '              description="User database that can be updated and saved"' >> /opt/tomcat/conf//server.xml \
-    && echo '              factory="org.apache.catalina.users.MemoryUserDatabaseFactory"' >> /opt/tomcat/conf//server.xml \
-    && echo '              pathname="conf/tomcat-users.xml" />' >> /opt/tomcat/conf//server.xml \
-    && echo '  </GlobalNamingResources>' >> /opt/tomcat/conf//server.xml \
-    && echo '  <Service name="Catalina">' >> /opt/tomcat/conf//server.xml \
-    && echo '    <!-- Remove the HTTP Connector -->' >> /opt/tomcat/conf//server.xml \
-    && echo '    <!-- Configure HTTPS Connector on port 4041 -->' >> /opt/tomcat/conf//server.xml \
-    && echo '    <Connector port="4041" protocol="org.apache.coyote.http11.Http11NioProtocol"' >> /opt/tomcat/conf//server.xml \
-    && echo '               maxThreads="150" SSLEnabled="true" >' >> /opt/tomcat/conf//server.xml \
-    && echo '        <SSLHostConfig>' >> /opt/tomcat/conf//server.xml \
-    && echo '            <Certificate certificateKeyFile="conf/ca-key.pem"' >> /opt/tomcat/conf//server.xml \
-    && echo '                         certificateFile="conf/ca-cert.pem"' >> /opt/tomcat/conf//server.xml \
-    && echo '                         type="RSA" />' >> /opt/tomcat/conf//server.xml \
-    && echo '        </SSLHostConfig>' >> /opt/tomcat/conf//server.xml \
-    && echo '    </Connector>' >> /opt/tomcat/conf//server.xml \
-    && echo '    <Engine name="Catalina" defaultHost="localhost">' >> /opt/tomcat/conf//server.xml \
-    && echo '      <Realm className="org.apache.catalina.realm.LockOutRealm">' >> /opt/tomcat/conf//server.xml \
-    && echo '        <Realm className="org.apache.catalina.realm.UserDatabaseRealm" resourceName="UserDatabase"/>' >> /opt/tomcat/conf//server.xml \
-    && echo '      </Realm>' >> /opt/tomcat/conf//server.xml \
-    && echo '      <Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true">' >> /opt/tomcat/conf//server.xml \
-    && echo '        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"' >> /opt/tomcat/conf//server.xml \
-    && echo '               prefix="localhost_access_log" suffix=".txt"' >> /opt/tomcat/conf//server.xml \
-    && echo '               pattern="%h %l %u %t &quot;%r&quot; %s %b" />' >> /opt/tomcat/conf//server.xml \
-    && echo '      </Host>' >> /opt/tomcat/conf//server.xml \
-    && echo '    </Engine>' >> /opt/tomcat/conf//server.xml \
-    && echo '  </Service>' >> /opt/tomcat/conf//server.xml \
-    && echo '</Server>' >> /opt/tomcat/conf//server.xml
+# Overwrite the default server.xml using cat
+RUN cat <<EOL > /opt/tomcat/conf/server.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Server port="8005" shutdown="SHUTDOWN">
+  <Listener className="org.apache.catalina.startup.VersionLoggerListener" />
+  <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+  <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
+  <GlobalNamingResources>
+    <Resource name="UserDatabase" auth="Container"
+              type="org.apache.catalina.UserDatabase"
+              description="User database that can be updated and saved"
+              factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+              pathname="conf/tomcat-users.xml" />
+  </GlobalNamingResources>
+  <Service name="Catalina">
+    <!-- Remove the HTTP Connector -->
+    <!-- Configure HTTPS Connector on port 4041 -->
+    <Connector port="4041" protocol="org.apache.coyote.http11.Http11NioProtocol"
+               maxThreads="150" SSLEnabled="true" >
+      <SSLHostConfig>
+        <Certificate certificateKeyFile="conf/ca-key.pem"
+                     certificateFile="conf/ca-cert.pem"
+                     type="RSA" />
+      </SSLHostConfig>
+    </Connector>
+    <Engine name="Catalina" defaultHost="localhost">
+      <Realm className="org.apache.catalina.realm.LockOutRealm">
+        <Realm className="org.apache.catalina.realm.UserDatabaseRealm" resourceName="UserDatabase"/>
+      </Realm>
+      <Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true">
+        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
+               prefix="localhost_access_log" suffix=".txt"
+               pattern="%h %l %u %t &quot;%r&quot; %s %b" />
+      </Host>
+    </Engine>
+  </Service>
+</Server>
+EOL
 
 # Copy the CA PEM files
 COPY ca-cert.pem /opt/tomcat/conf/ca-cert.pem
